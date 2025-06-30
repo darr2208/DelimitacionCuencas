@@ -2,10 +2,10 @@ import folium
 from shapely.geometry import Point
 import geopandas as gpd
 
-def generar_mapa_cuenca(lat, lon, radio_km=0.5):
+def generar_mapa_cuenca(lat, lon, radio_km=2.0):
     m = folium.Map(
         location=[lat, lon],
-        zoom_start=15,
+        zoom_start=14,
         control_scale=True,
         tiles=None
     )
@@ -22,10 +22,13 @@ def generar_mapa_cuenca(lat, lon, radio_km=0.5):
         name='Topografía'
     ).add_to(m)
 
-    radio_grados = radio_km / 111.0
     punto = Point(lon, lat)
-    gdf = gpd.GeoDataFrame(geometry=[punto.buffer(radio_grados)], crs="EPSG:4326")
-    coords = list(gdf.iloc[0].geometry.exterior.coords)
+    gdf = gpd.GeoDataFrame(geometry=[punto], crs="EPSG:4326")
+    gdf_metros = gdf.to_crs(epsg=3857)
+    gdf_metros["geometry"] = gdf_metros.buffer(radio_km * 1000)
+    gdf_final = gdf_metros.to_crs(epsg=4326)
+
+    coords = list(gdf_final.iloc[0].geometry.exterior.coords)
     coords_latlon = [[latitud, longitud] for longitud, latitud in coords]
 
     grupo = folium.FeatureGroup(name='Cuenca simulada')
@@ -50,3 +53,4 @@ def generar_mapa_cuenca(lat, lon, radio_km=0.5):
     folium.LayerControl(collapsed=False).add_to(m)
 
     return m
+
