@@ -1,8 +1,9 @@
 import folium
-from shapely.geometry import Polygon
 import geopandas as gpd
+from shapely.geometry import Point
+from folium.plugins import Draw
 
-def generar_mapa_cuenca(lat, lon, km2=3):
+def generar_mapa_cuenca(lat, lon, radio_km=1.0):
     m = folium.Map(
         location=[lat, lon],
         zoom_start=14,
@@ -22,30 +23,20 @@ def generar_mapa_cuenca(lat, lon, km2=3):
         name='Topografía'
     ).add_to(m)
 
-    lado_km = km2 ** 0.5
-    delta_lat = lado_km / 111
-    delta_lon = lado_km / (111 * abs(math.cos(math.radians(lat))) + 1e-6)
+    radio_grados = radio_km / 111
 
-    coords = [
-        [lat + delta_lat / 2, lon - delta_lon / 2],
-        [lat + delta_lat / 2, lon + delta_lon / 2],
-        [lat - delta_lat / 2, lon + delta_lon / 2],
-        [lat - delta_lat / 2, lon - delta_lon / 2],
-        [lat + delta_lat / 2, lon - delta_lon / 2]
-    ]
-
-    poly = Polygon(coords)
-    gdf = gpd.GeoDataFrame(index=[0], geometry=[poly], crs="EPSG:4326")
+    centro = Point(lon, lat)
+    gdf = gpd.GeoDataFrame(index=[0], geometry=[centro.buffer(radio_grados)], crs="EPSG:4326")
     geojson_data = gdf.__geo_interface__
 
     folium.GeoJson(
         geojson_data,
         name='Cuenca simulada',
         style_function=lambda x: {
-            'fillColor': '#ff69b4',
-            'color': '#ff1493',
-            'weight': 4,
-            'fillOpacity': 0.6
+            'fillColor': '#e60000',     # Rojo fuerte
+            'color': '#990000',         # Borde más oscuro
+            'weight': 4,                # Borde grueso
+            'fillOpacity': 0.7          # Más opaco para visibilidad
         },
         tooltip='Cuenca simulada'
     ).add_to(m)
@@ -53,4 +44,3 @@ def generar_mapa_cuenca(lat, lon, km2=3):
     folium.LayerControl(collapsed=False).add_to(m)
 
     return m
-
