@@ -6,7 +6,7 @@ from shapely.geometry import Polygon
 def generar_mapa_cuenca(lat, lon, geojson_data=None):
     m = folium.Map(
         location=[lat, lon],
-        zoom_start=13,
+        zoom_start=14,
         tiles=None,
         control_scale=True
     )
@@ -14,27 +14,24 @@ def generar_mapa_cuenca(lat, lon, geojson_data=None):
     folium.TileLayer(
         tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
         attr='ESRI World Imagery',
-        name='Satélite',
-        overlay=False,
-        control=True
+        name='Satélite'
     ).add_to(m)
 
     folium.TileLayer(
         tiles='https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
         attr='OpenTopoMap',
-        name='Topografía',
-        overlay=False,
-        control=True
+        name='Topografía'
     ).add_to(m)
 
     if geojson_data is None:
-        buffer = 0.015
+        delta_lat = 0.01
+        delta_lon = 0.015
         coords = [
-            [lat - buffer, lon - buffer],
-            [lat - buffer, lon + buffer],
-            [lat + buffer, lon + buffer],
-            [lat + buffer, lon - buffer],
-            [lat - buffer, lon - buffer]
+            [lat, lon - delta_lon],
+            [lat - delta_lat, lon],
+            [lat, lon + delta_lon],
+            [lat + delta_lat, lon],
+            [lat, lon - delta_lon]
         ]
         poly = Polygon(coords)
         gdf = gpd.GeoDataFrame(index=[0], geometry=[poly], crs="EPSG:4326")
@@ -42,20 +39,14 @@ def generar_mapa_cuenca(lat, lon, geojson_data=None):
 
     folium.GeoJson(
         geojson_data,
-        name='Delimitación de Cuenca',
+        name='Cuenca simulada',
         style_function=lambda x: {
             'fillColor': '#4da7db',
             'color': '#1768ac',
             'weight': 2,
-            'fillOpacity': 200
+            'fillOpacity': 0.3
         },
-        tooltip='Cuenca simulada'
-    ).add_to(m)
-
-    Draw(
-        export=True,
-        filename='cuenca_dibujada.geojson',
-        position='topleft'
+        tooltip='Delimitación automática'
     ).add_to(m)
 
     folium.LayerControl(collapsed=False).add_to(m)
