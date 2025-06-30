@@ -16,11 +16,11 @@ if os.path.exists("assets/estilo.css"):
 col1, col2 = st.columns([1, 1])
 with col1:
     if os.path.exists("data/logo1.png"):
-        st.image(Image.open("data/logo1.png"), use_container_width=True)
+        st.image(Image.open("..data/logo1.png"), use_container_width=True)
     else:
         st.warning("No se encontró el archivo logo1.png")
 with col2:
-    if os.path.exists("data/logo2.png"):
+    if os.path.exists("..data/logo2.png"):
         st.image(Image.open("data/logo2.png"), use_container_width=True)
     else:
         st.warning("No se encontró el archivo logo2.png")
