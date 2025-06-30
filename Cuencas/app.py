@@ -1,63 +1,58 @@
 import streamlit as st
+import geopandas as gpd
 from utils.calculos import calcular_parametros
 from utils.exportar_excel import exportar_a_excel
 from utils.generar_shapefile import generar_shapefile_desde_bbox
 from utils.mapa import generar_mapa_cuenca
-import streamlit.components.v1 as components
+import os
 
-st.set_page_config(layout="wide", page_title="Delimitación de Cuencas", page_icon="🌎")
+st.set_page_config(page_title="Delimitador de Cuencas", layout="wide")
 
-with open("assets/estilo.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+if os.path.exists("assets/estilo.css"):
+    with open("assets/estilo.css") as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-col1, col2, _ = st.columns([1, 1, 6])
+col1, col2 = st.columns([1, 1])
 with col1:
     st.image("data/logo1.png", use_container_width=True)
 with col2:
     st.image("data/logo2.png", use_container_width=True)
 
-st.markdown("<h1 style='text-align: center; color: #114B5F;'>Simulación de Delimitación de Cuencas Hidrográficas</h1>", unsafe_allow_html=True)
-st.markdown("---")
+st.title("Simulador de Parámetros Morfométricos de Cuencas")
 
-st.sidebar.header("Coordenadas del Punto Central")
-lat = st.sidebar.number_input("Latitud", value=4.65, format="%.6f")
-lon = st.sidebar.number_input("Longitud", value=-74.05, format="%.6f")
+with st.form("formulario"):
+    st.subheader("1. Coordenadas del Área de Interés")
+    lat = st.number_input("Latitud (Centro)", value=4.61, format="%.6f")
+    lon = st.number_input("Longitud (Centro)", value=-74.08, format="%.6f")
+    buffer = st.slider("Tamaño del área (km)", min_value=0.5, max_value=5.0, value=1.0, step=0.1)
 
-if st.sidebar.button("Simular Delimitación"):
-    buffer = 0.02
-    minx, miny = lon - buffer, lat - buffer
-    maxx, maxy = lon + buffer, lat + buffer
+    st.subheader("2. Opciones de Salida")
+    nombre_archivo = st.text_input("Nombre del archivo exportado", value="cuenca")
 
-    df_parametros, df_alturas = calcular_parametros(minx, miny, maxx, maxy)
-    ruta_excel = exportar_a_excel(df_parametros, df_alturas)
-    ruta_shapefile = generar_shapefile_desde_bbox(minx, miny, maxx, maxy)
+    boton = st.form_submit_button("Generar Parámetros")
 
-    geojson_data = {
-        "type": "FeatureCollection",
-        "features": [{
-            "type": "Feature",
-            "geometry": {
-                "type": "Polygon",
-                "coordinates": [[
-                    [minx, miny], [maxx, miny], [maxx, maxy], [minx, maxy], [minx, miny]
-                ]]
-            }
-        }]
-    }
+if boton:
+    delta = buffer / 111
+    minx = lon - delta
+    maxx = lon + delta
+    miny = lat - delta
+    maxy = lat + delta
 
-    mapa = generar_mapa_cuenca(lat, lon, geojson_data)
-    st.markdown("### Mapa de la Cuenca")
-    components.html(mapa._repr_html_(), height=500)
+    df_param, df_alturas = calcular_parametros(minx, miny, maxx, maxy)
+    st.success("Parámetros calculados correctamente.")
 
-    st.markdown("### Parámetros Morfométricos Calculados")
-    st.dataframe(df_parametros, use_container_width=True)
+    st.subheader("Resultados Generales")
+    st.dataframe(df_param, use_container_width=True)
 
-    st.markdown("### Clases Altitudinales")
+    st.subheader("Clases Altitudinales")
     st.dataframe(df_alturas, use_container_width=True)
 
-    st.markdown("### Archivos Exportables")
-    st.download_button("📥 Descargar Excel", data=open(ruta_excel, "rb").read(), file_name="parametros.xlsx")
-    st.download_button("📥 Descargar Shapefile ZIP", data=open(ruta_shapefile, "rb").read(), file_name="cuenca.zip")
-else:
-    st.info("Ingresa las coordenadas y presiona 'Simular Delimitación' para iniciar.")
+    ruta_excel = exportar_a_excel(df_param, df_alturas, nombre_archivo=f"{nombre_archivo}.xlsx")
+    ruta_zip = generar_shapefile_desde_bbox(minx, miny, maxx, maxy, nombre=nombre_archivo)
 
+    st.download_button("📄 Descargar parámetros (Excel)", data=open(ruta_excel, "rb"), file_name=nombre_archivo + ".xlsx")
+    st.download_button("🗂️ Descargar cuenca (Shapefile .zip)", data=open(ruta_zip, "rb"), file_name=nombre_archivo + ".zip")
+
+    st.subheader("Visualización de la Cuenca")
+    mapa = generar_mapa_cuenca(lat, lon)
+    st.components.v1.html(mapa._repr_html_(), height=500)
