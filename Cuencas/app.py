@@ -62,8 +62,11 @@ if boton:
     ruta_excel = exportar_a_excel(df_param, df_alturas, nombre_archivo=f"{nombre_archivo}.xlsx")
     ruta_zip = generar_shapefile_desde_bbox(minx, miny, maxx, maxy, nombre=nombre_archivo)
 
-    st.download_button("📄 Descargar parámetros (Excel)", data=open(ruta_excel, "rb"), file_name=nombre_archivo + ".xlsx")
-    st.download_button("🗂️ Descargar cuenca (Shapefile .zip)", data=open(ruta_zip, "rb"), file_name=nombre_archivo + ".zip")
+    with open(ruta_excel, "rb") as f:
+        st.download_button("📄 Descargar parámetros (Excel)", data=f, file_name=nombre_archivo + ".xlsx")
+
+    with open(ruta_zip, "rb") as f:
+        st.download_button("🗂️ Descargar cuenca (Shapefile .zip)", data=f, file_name=nombre_archivo + ".zip")
 
     st.subheader("Visualización de la Cuenca")
     generar_mapa_y_cuenca(lat, lon, buffer_km=buffer)
