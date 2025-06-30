@@ -15,8 +15,8 @@ if os.path.exists("assets/estilo.css"):
 
 col1, col2 = st.columns([1, 1])
 
-logo1_path = os.path.join(os.path.dirname(__file__), "data", "logo1.png")
-logo2_path = os.path.join(os.path.dirname(__file__), "data", "logo2.png")
+logo1_path = os.path.join("data", "logo1.png")
+logo2_path = os.path.join("data", "logo2.png")
 
 with col1:
     if os.path.exists(logo1_path):
@@ -44,27 +44,31 @@ with st.form("formulario"):
     boton = st.form_submit_button("Generar Parámetros")
 
 if boton:
-    delta = buffer / 111
-    minx = lon - delta
-    maxx = lon + delta
-    miny = lat - delta
-    maxy = lat + delta
+    try:
+        delta = buffer / 111
+        minx = lon - delta
+        maxx = lon + delta
+        miny = lat - delta
+        maxy = lat + delta
 
-    df_param, df_alturas = calcular_parametros(minx, miny, maxx, maxy)
-    st.success("Parámetros calculados correctamente.")
+        df_param, df_alturas = calcular_parametros(minx, miny, maxx, maxy)
 
-    st.subheader("Resultados Generales")
-    st.dataframe(df_param, use_container_width=True)
+        st.success("Parámetros calculados correctamente.")
 
-    st.subheader("Clases Altitudinales")
-    st.dataframe(df_alturas, use_container_width=True)
+        st.subheader("Resultados Generales")
+        st.dataframe(df_param, use_container_width=True)
 
-    ruta_excel = exportar_a_excel(df_param, df_alturas, nombre_archivo=f"{nombre_archivo}.xlsx")
-    ruta_zip = generar_shapefile_desde_bbox(minx, miny, maxx, maxy, nombre=nombre_archivo)
+        st.subheader("Clases Altitudinales")
+        st.dataframe(df_alturas, use_container_width=True)
 
-    st.download_button("📄 Descargar parámetros (Excel)", data=open(ruta_excel, "rb"), file_name=nombre_archivo + ".xlsx")
-    st.download_button("🗂️ Descargar cuenca (Shapefile .zip)", data=open(ruta_zip, "rb"), file_name=nombre_archivo + ".zip")
+        ruta_excel = exportar_a_excel(df_param, df_alturas, nombre_archivo=f"{nombre_archivo}.xlsx")
+        ruta_zip = generar_shapefile_desde_bbox(minx, miny, maxx, maxy, nombre=nombre_archivo)
 
-    st.subheader("Visualización de la Cuenca")
-    generar_mapa_y_cuenca(lat, lon, buffer_km=buffer)
+        st.download_button("📄 Descargar parámetros (Excel)", data=open(ruta_excel, "rb"), file_name=nombre_archivo + ".xlsx")
+        st.download_button("🗂️ Descargar cuenca (Shapefile .zip)", data=open(ruta_zip, "rb"), file_name=nombre_archivo + ".zip")
 
+        st.subheader("Visualización de la Cuenca")
+        generar_mapa_y_cuenca(lat, lon, buffer_km=buffer)
+
+    except Exception as e:
+        st.error(f"Error durante la ejecución: {str(e)}")
