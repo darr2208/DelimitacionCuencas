@@ -1,30 +1,35 @@
 import streamlit as st
+import os
 import geopandas as gpd
+from PIL import Image
+
 from utils.calculos import calcular_parametros
 from utils.exportar_excel import exportar_a_excel
 from utils.generar_shapefile import generar_shapefile_desde_bbox
 from utils.mapa import generar_mapa_y_cuenca
-import os
-from PIL import Image
 
 st.set_page_config(page_title="Delimitador de Cuencas", layout="wide")
 
-if os.path.exists("assets/estilo.css"):
-    with open("assets/estilo.css") as f:
+ruta_css = "assets/estilo.css"
+if os.path.exists(ruta_css):
+    with open(ruta_css) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-col1, col2 = st.columns([1, 1])
-
-logo1_path = "data/logo1.png"
-logo2_path = "data/logo2.png"
+col1, col2 = st.columns(2)
+logo1_path = os.path.join("data", "logo1.png")
+logo2_path = os.path.join("data", "logo2.png")
 
 with col1:
     if os.path.exists(logo1_path):
-        st.image(Image.open(logo1_path), use_container_width=True)
+        st.image(logo1_path, use_column_width=True)
+    else:
+        st.warning("No se encontró logo1.png")
 
 with col2:
     if os.path.exists(logo2_path):
-        st.image(Image.open(logo2_path), use_container_width=True)
+        st.image(logo2_path, use_column_width=True)
+    else:
+        st.warning("No se encontró logo2.png")
 
 st.title("Simulador de Parámetros Morfométricos de Cuencas")
 
@@ -37,9 +42,9 @@ with st.form("formulario"):
     st.subheader("2. Opciones de Salida")
     nombre_archivo = st.text_input("Nombre del archivo exportado", value="cuenca")
 
-    boton = st.form_submit_button("Generar Parámetros")
+    generar = st.form_submit_button("Generar Parámetros")
 
-if boton:
+if generar:
     try:
         delta = buffer / 111
         minx = lon - delta
@@ -67,4 +72,4 @@ if boton:
         generar_mapa_y_cuenca(lat, lon, buffer_km=buffer)
 
     except Exception as e:
-        st.error(f"Error durante la ejecución: {str(e)}")
+        st.error(f"Ocurrió un error durante la ejecución: {e}")
