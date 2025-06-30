@@ -7,15 +7,15 @@ from streamlit_folium import st_folium
 from PIL import Image
 
 st.set_page_config(page_title="Delimitación de Cuencas", layout="wide")
-st.markdown('<link rel="stylesheet" href="assets/estilo.css">', unsafe_allow_html=True)
 
+# Logos
 col1, col2, col3 = st.columns([1, 6, 1])
 with col1:
-    st.image("data/logo_1.png", use_column_width=True)
+    st.image("data/LOGO 1.png", use_container_width=True)
 with col2:
     st.markdown("<h1 style='text-align: center;'>Simulador de Parámetros Morfométricos</h1>", unsafe_allow_html=True)
 with col3:
-    st.image("data/logo_2.png", use_column_width=True)
+    st.image("data/LOGO 2.png", use_container_width=True)
 
 st.markdown("<hr>", unsafe_allow_html=True)
 st.markdown("### Selecciona una ubicación para simular la delimitación de la cuenca:")
