@@ -1,12 +1,12 @@
 import folium
-from folium.plugins import Draw
-import geopandas as gpd
 from shapely.geometry import Polygon
+import geopandas as gpd
+from folium.plugins import Draw
 
 def generar_mapa_cuenca(lat, lon, geojson_data=None):
     m = folium.Map(
         location=[lat, lon],
-        zoom_start=13,
+        zoom_start=15,
         tiles=None,
         control_scale=True
     )
@@ -25,19 +25,13 @@ def generar_mapa_cuenca(lat, lon, geojson_data=None):
 
     if geojson_data is None:
         coords = [
-            [lat + 0.01, lon],
-            [lat + 0.008, lon + 0.006],
-            [lat + 0.005, lon + 0.012],
-            [lat, lon + 0.013],
-            [lat - 0.005, lon + 0.012],
-            [lat - 0.008, lon + 0.006],
-            [lat - 0.01, lon],
-            [lat - 0.008, lon - 0.006],
-            [lat - 0.005, lon - 0.011],
-            [lat, lon - 0.012],
-            [lat + 0.005, lon - 0.011],
-            [lat + 0.008, lon - 0.006],
-            [lat + 0.01, lon]
+            [lat + 0.002, lon - 0.002],
+            [lat + 0.002, lon + 0.002],
+            [lat, lon + 0.003],
+            [lat - 0.002, lon + 0.002],
+            [lat - 0.002, lon - 0.002],
+            [lat, lon - 0.003],
+            [lat + 0.002, lon - 0.002]
         ]
         poly = Polygon(coords)
         gdf = gpd.GeoDataFrame(index=[0], geometry=[poly], crs="EPSG:4326")
@@ -47,15 +41,14 @@ def generar_mapa_cuenca(lat, lon, geojson_data=None):
         geojson_data,
         name='Cuenca simulada',
         style_function=lambda x: {
-            'fillColor': '#4da7db',
-            'color': '#a349a4',
-            'weight': 2,
-            'fillOpacity': 0.3
+            'fillColor': '#ff69b4',
+            'color': '#ff1493',
+            'weight': 5,
+            'fillOpacity': 0.5
         },
-        tooltip='Delimitación automática'
+        tooltip='Cuenca simulada'
     ).add_to(m)
 
     folium.LayerControl(collapsed=False).add_to(m)
 
     return m
-
