@@ -2,7 +2,7 @@ import streamlit as st
 import os
 import base64
 import pandas as pd
-from utils.calculos_aproximados import calcular_parametros
+from utils.calculos import calcular_parametros
 from utils.exportar_excel import exportar_parametros_excel
 from utils.generar_shapefile import generar_shapefile
 from utils.mapa import mostrar_mapa
