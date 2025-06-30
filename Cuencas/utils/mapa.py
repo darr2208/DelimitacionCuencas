@@ -24,14 +24,16 @@ def generar_mapa_cuenca(lat, lon, geojson_data=None):
     ).add_to(m)
 
     if geojson_data is None:
-        delta_lat = 0.01
-        delta_lon = 0.015
         coords = [
-            [lat, lon - delta_lon],
-            [lat - delta_lat, lon],
-            [lat, lon + delta_lon],
-            [lat + delta_lat, lon],
-            [lat, lon - delta_lon]
+            [lat + 0.007, lon - 0.006],
+            [lat + 0.009, lon + 0.004],
+            [lat + 0.004, lon + 0.009],
+            [lat - 0.003, lon + 0.008],
+            [lat - 0.006, lon + 0.004],
+            [lat - 0.008, lon - 0.003],
+            [lat - 0.005, lon - 0.007],
+            [lat + 0.001, lon - 0.008],
+            [lat + 0.007, lon - 0.006]
         ]
         poly = Polygon(coords)
         gdf = gpd.GeoDataFrame(index=[0], geometry=[poly], crs="EPSG:4326")
@@ -42,7 +44,7 @@ def generar_mapa_cuenca(lat, lon, geojson_data=None):
         name='Cuenca simulada',
         style_function=lambda x: {
             'fillColor': '#4da7db',
-            'color': '#1768ac',
+            'color': '#a349a4',
             'weight': 2,
             'fillOpacity': 0.3
         },
