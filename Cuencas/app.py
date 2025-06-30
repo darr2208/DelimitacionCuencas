@@ -5,6 +5,7 @@ from utils.exportar_excel import exportar_a_excel
 from utils.generar_shapefile import generar_shapefile_desde_bbox
 from utils.mapa import generar_mapa_cuenca
 import os
+from PIL import Image
 
 st.set_page_config(page_title="Delimitador de Cuencas", layout="wide")
 
@@ -14,9 +15,15 @@ if os.path.exists("assets/estilo.css"):
 
 col1, col2 = st.columns([1, 1])
 with col1:
-    st.image("data/logo1.png", use_container_width=True)
+    if os.path.exists("data/logo1.png"):
+        st.image(Image.open("data/logo1.png"), use_container_width=True)
+    else:
+        st.warning("No se encontró el archivo logo1.png")
 with col2:
-    st.image("data/logo2.png", use_container_width=True)
+    if os.path.exists("data/logo2.png"):
+        st.image(Image.open("data/logo2.png"), use_container_width=True)
+    else:
+        st.warning("No se encontró el archivo logo2.png")
 
 st.title("Simulador de Parámetros Morfométricos de Cuencas")
 
@@ -56,3 +63,4 @@ if boton:
     st.subheader("Visualización de la Cuenca")
     mapa = generar_mapa_cuenca(lat, lon)
     st.components.v1.html(mapa._repr_html_(), height=500)
+
