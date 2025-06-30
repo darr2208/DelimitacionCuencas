@@ -8,3 +8,4 @@ fiona
 pyproj
 openpyxl
 matplotlib
+mplleaflet
