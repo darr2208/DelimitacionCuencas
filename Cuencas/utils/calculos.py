@@ -2,7 +2,7 @@ import random
 import math
 import pandas as pd
 
-def calcular_parametros (minx, miny, maxx, maxy):
+def calcular_parametros(minx, miny, maxx, maxy):
     area_km2 = round(abs((maxx - minx) * (maxy - miny) * 111 * 111), 2)
     area_ha = round(area_km2 * 100, 2)
     perimetro_km = round(2 * (abs(maxx - minx) + abs(maxy - miny)) * 111, 2)
@@ -37,8 +37,34 @@ def calcular_parametros (minx, miny, maxx, maxy):
         'Kirpich': round((0.01947 * (longitud_cuenca ** 0.77) * (slope_pct ** -0.385)), 2),
         'Temez': round(random.uniform(2, 5), 2)
     }
-
     tiempos['Promedio'] = round(sum(tiempos.values()) / len(tiempos), 2)
+
+    datos = [
+        ("Área (km2)", area_km2, ""),
+        ("Área (ha)", area_ha, ""),
+        ("Perímetro (km)", perimetro_km, ""),
+        ("Índice de Compacidad", ic, ""),
+        ("Tipo según IC", None, tipo),
+        ("Longitud de la Cuenca (km)", longitud_cuenca, ""),
+        ("Factor de Forma", ff, ""),
+        ("Forma de la Cuenca", None, forma_cuenca),
+        ("Longitud CP_L (km)", cp_l, ""),
+        ("Longitud CP (km)", cp, ""),
+        ("Factor de Sinuosidad", fs, ""),
+        ("Clasificación Sinuosidad", None, clasif_fs),
+        ("Longitud Total de Cauces (km)", long_total_cauces, ""),
+        ("Densidad de Drenaje", densidad_drenaje, ""),
+        ("Clasificación Drenaje", None, clasif_dd),
+        ("Cota Mínima (msnm)", cota_min, ""),
+        ("Cota Máxima (msnm)", cota_max, ""),
+        ("Diferencia de Altura (m)", dif_altura, ""),
+        ("Número de Drenajes", num_drenajes, ""),
+        ("Densidad de Corrientes", densidad_corrientes, ""),
+        ("Pendiente (°)", slope_deg, ""),
+        ("Pendiente (%)", slope_pct, "")
+    ] + [(k, v, "") for k, v in tiempos.items()]
+
+    df = pd.DataFrame(datos, columns=["Parámetro", "Valor", "Clasificación"])
 
     alturas = []
     for i in range(5):
@@ -66,26 +92,5 @@ def calcular_parametros (minx, miny, maxx, maxy):
         "Area (M2)", "Area (Km2)", "Area Acumulada (Km2)",
         "Área Acumulada (%)", "Area % de cada clase"
     ])
-
-    df = pd.DataFrame({
-        "Parámetro": [
-            "Área (km2)", "Área (ha)", "Perímetro (km)", "Clasificación",
-            "Índice de Compacidad", "Tipo", "Longitud de la Cuenca (km)",
-            "Factor de Forma", "Forma de la Cuenca", "Longitud CP_L (km)",
-            "Longitud CP (km)", "Factor de Sinuosidad", "Clasificación Sinuosidad",
-            "Longitud Total de Cauces (km)", "Densidad de Drenaje",
-            "Clasificación Drenaje", "Cota Mínima (msnm)", "Cota Máxima (msnm)",
-            "Diferencia de Altura (m)", "Número de Drenajes",
-            "Densidad de Corrientes", "Pendiente (°)", "Pendiente (%)"
-        ] + list(tiempos.keys()),
-        "Valor": [
-            area_km2, area_ha, perimetro_km, tipo,
-            ic, tipo, longitud_cuenca, ff, forma_cuenca,
-            cp_l, cp, fs, clasif_fs,
-            long_total_cauces, densidad_drenaje, clasif_dd,
-            cota_min, cota_max, dif_altura,
-            num_drenajes, densidad_corrientes, slope_deg, slope_pct
-        ] + list(tiempos.values())
-    })
 
     return df, df_alturas
