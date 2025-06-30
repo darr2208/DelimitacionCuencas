@@ -12,9 +12,9 @@ with open("assets/estilo.css") as f:
 
 col1, col2 = st.columns([1, 1])
 with col1:
-    st.image("data/logo_institucional.png", use_column_width=False)
+    st.image("data/LOGO 1.png", use_column_width=False)
 with col2:
-    st.image("data/logo2.png", use_column_width=False)
+    st.image("data/LOGO 2.png", use_column_width=False)
 
 st.title("Delimitador de Cuencas Hidrográficas")
 st.markdown("Simulación de delimitación y cálculo de parámetros morfométricos")
