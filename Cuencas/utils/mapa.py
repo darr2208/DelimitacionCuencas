@@ -47,7 +47,7 @@ def generar_mapa_cuenca(lat, lon, geojson_data=None):
             'fillColor': '#4da7db',
             'color': '#1768ac',
             'weight': 2,
-            'fillOpacity': 0.45
+            'fillOpacity': 200
         },
         tooltip='Cuenca simulada'
     ).add_to(m)
