@@ -15,20 +15,16 @@ if os.path.exists("assets/estilo.css"):
 
 col1, col2 = st.columns([1, 1])
 
-logo1_path = os.path.join("data", "logo1.png")
-logo2_path = os.path.join("data", "logo2.png")
+logo1_path = "data/logo1.png"
+logo2_path = "data/logo2.png"
 
 with col1:
     if os.path.exists(logo1_path):
         st.image(Image.open(logo1_path), use_container_width=True)
-    else:
-        st.warning("No se encontró logo1.png")
 
 with col2:
     if os.path.exists(logo2_path):
         st.image(Image.open(logo2_path), use_container_width=True)
-    else:
-        st.warning("No se encontró logo2.png")
 
 st.title("Simulador de Parámetros Morfométricos de Cuencas")
 
