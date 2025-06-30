@@ -2,7 +2,7 @@ import random
 import math
 import pandas as pd
 
-def calcular_parametros_aproximados(minx, miny, maxx, maxy):
+def calcular_parametros (minx, miny, maxx, maxy):
     area_km2 = round(abs((maxx - minx) * (maxy - miny) * 111 * 111), 2)
     area_ha = round(area_km2 * 100, 2)
     perimetro_km = round(2 * (abs(maxx - minx) + abs(maxy - miny)) * 111, 2)
