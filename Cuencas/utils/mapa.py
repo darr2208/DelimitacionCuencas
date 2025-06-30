@@ -1,9 +1,9 @@
 import streamlit as st
 import folium
-from folium import Marker
-from streamlit_folium import st_folium
 import matplotlib.pyplot as plt
 import numpy as np
+from streamlit_folium import st_folium
+from folium import Marker
 
 def generar_mapa_y_cuenca(lat, lon, buffer_km=2.0):
     m = folium.Map(location=[lat, lon], zoom_start=13, tiles="OpenTopoMap")
@@ -21,7 +21,7 @@ def generar_mapa_y_cuenca(lat, lon, buffer_km=2.0):
 
     st_folium(m, width=700, height=450)
 
-    fig, ax = plt.subplots(figsize=(6, 6))
+    fig, ax = plt.subplots(figsize=(6.5, 6.5))
     np.random.seed(0)
     for i in range(20):
         x = np.linspace(0, 1, 100)
@@ -37,3 +37,4 @@ def generar_mapa_y_cuenca(lat, lon, buffer_km=2.0):
     ax.set_title("Cuenca simulada")
     ax.axis("off")
     st.pyplot(fig)
+
