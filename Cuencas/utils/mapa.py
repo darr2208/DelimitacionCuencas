@@ -1,11 +1,11 @@
 import folium
-from shapely.geometry import Point
-import geopandas as gpd
+from folium import Polygon, Marker, FeatureGroup
+import math
 
 def generar_mapa_cuenca(lat, lon, radio_km=2.0):
     m = folium.Map(
         location=[lat, lon],
-        zoom_start=14,
+        zoom_start=13,
         control_scale=True,
         tiles=None
     )
@@ -22,35 +22,39 @@ def generar_mapa_cuenca(lat, lon, radio_km=2.0):
         name='Topografía'
     ).add_to(m)
 
-    punto = Point(lon, lat)
-    gdf = gpd.GeoDataFrame(geometry=[punto], crs="EPSG:4326")
-    gdf_metros = gdf.to_crs(epsg=3857)
-    gdf_metros["geometry"] = gdf_metros.buffer(radio_km * 1000)
-    gdf_final = gdf_metros.to_crs(epsg=4326)
+    delta = radio_km / 111
 
-    coords = list(gdf_final.iloc[0].geometry.exterior.coords)
-    coords_latlon = [[latitud, longitud] for longitud, latitud in coords]
+    coords = [
+        [lat + delta * 0.8, lon],
+        [lat + delta * 0.4, lon + delta * 0.5],
+        [lat, lon + delta],
+        [lat - delta * 0.3, lon + delta * 0.4],
+        [lat - delta * 0.7, lon],
+        [lat - delta * 0.4, lon - delta * 0.4],
+        [lat, lon - delta * 0.7],
+        [lat + delta * 0.5, lon - delta * 0.3],
+        [lat + delta * 0.8, lon]
+    ]
 
-    grupo = folium.FeatureGroup(name='Cuenca delimitada')
+    grupo = FeatureGroup(name='Cuenca simulada')
 
-    folium.Polygon(
-        locations=coords_latlon,
-        color="#d00000",
+    Polygon(
+        locations=coords,
+        color="#0070cc",
         weight=3,
         fill=True,
-        fill_color="#ff4d4d",
-        fill_opacity=0.6,
-        tooltip="Área simulada"
+        fill_color="#3399ff",
+        fill_opacity=0.5,
+        tooltip="Cuenca simulada"
     ).add_to(grupo)
 
-    folium.Marker(
+    Marker(
         location=[lat, lon],
         popup="Punto de interés",
-        icon=folium.Icon(color="red", icon="info-sign")
+        icon=folium.Icon(color="blue", icon="info-sign")
     ).add_to(grupo)
 
     grupo.add_to(m)
     folium.LayerControl(collapsed=False).add_to(m)
 
     return m
-
