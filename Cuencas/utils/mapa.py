@@ -1,19 +1,18 @@
 import folium
-import geopandas as gpd
 from shapely.geometry import Point
-from folium.plugins import Draw
+import geopandas as gpd
 
 def generar_mapa_cuenca(lat, lon, radio_km=1.0):
     m = folium.Map(
         location=[lat, lon],
         zoom_start=14,
-        tiles=None,
-        control_scale=True
+        control_scale=True,
+        tiles=None
     )
 
     folium.TileLayer(
         tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-        attr='ESRI World Imagery',
+        attr='ESRI',
         name='Satélite'
     ).add_to(m)
 
@@ -23,22 +22,26 @@ def generar_mapa_cuenca(lat, lon, radio_km=1.0):
         name='Topografía'
     ).add_to(m)
 
-    radio_grados = radio_km / 111
+    radio_grados = radio_km / 111.0
+    punto = Point(lon, lat)
+    gdf = gpd.GeoDataFrame(geometry=[punto.buffer(radio_grados)], crs="EPSG:4326")
+    coords = list(gdf.iloc[0].geometry.exterior.coords)
+    coords_latlon = [[latitud, longitud] for longitud, latitud in coords]
 
-    centro = Point(lon, lat)
-    gdf = gpd.GeoDataFrame(index=[0], geometry=[centro.buffer(radio_grados)], crs="EPSG:4326")
-    geojson_data = gdf.__geo_interface__
+    folium.Polygon(
+        locations=coords_latlon,
+        color="#d00000",
+        weight=4,
+        fill=True,
+        fill_color="#ff4d4d",
+        fill_opacity=0.6,
+        tooltip="Área simulada"
+    ).add_to(m)
 
-    folium.GeoJson(
-        geojson_data,
-        name='Cuenca simulada',
-        style_function=lambda x: {
-            'fillColor': '#e60000',     # Rojo fuerte
-            'color': '#990000',         # Borde más oscuro
-            'weight': 4,                # Borde grueso
-            'fillOpacity': 0.7          # Más opaco para visibilidad
-        },
-        tooltip='Cuenca simulada'
+    folium.Marker(
+        location=[lat, lon],
+        popup="Punto de interés",
+        icon=folium.Icon(color="red", icon="info-sign")
     ).add_to(m)
 
     folium.LayerControl(collapsed=False).add_to(m)
