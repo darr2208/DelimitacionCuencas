@@ -10,14 +10,14 @@ from utils.mapa import generar_mapa_y_cuenca
 
 st.set_page_config(page_title="Delimitador de Cuencas", layout="wide")
 
-ruta_css = "assets/estilo.css"
+ruta_css = "../assets/estilo.css"
 if os.path.exists(ruta_css):
     with open(ruta_css) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 col1, col2 = st.columns(2)
-logo1_path = os.path.join("data", "logo1.png")
-logo2_path = os.path.join("data", "logo2.png")
+logo1_path = os.path.join("../data", "logo1.png")
+logo2_path = os.path.join("../data", "logo2.png")
 
 with col1:
     if os.path.exists(logo1_path):
