@@ -3,7 +3,7 @@ import geopandas as gpd
 from utils.calculos import calcular_parametros
 from utils.exportar_excel import exportar_a_excel
 from utils.generar_shapefile import generar_shapefile_desde_bbox
-from utils.mapa import generar_mapa_cuenca
+from utils.mapa import generar_mapa_y_cuenca
 import os
 from PIL import Image
 
@@ -66,7 +66,5 @@ if boton:
     st.download_button("🗂️ Descargar cuenca (Shapefile .zip)", data=open(ruta_zip, "rb"), file_name=nombre_archivo + ".zip")
 
     st.subheader("Visualización de la Cuenca")
-    mapa = generar_mapa_cuenca(lat, lon)
-    st.components.v1.html(mapa._repr_html_(), height=500)
-
+    generar_mapa_y_cuenca(lat, lon, buffer_km=buffer)
 
