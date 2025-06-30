@@ -6,7 +6,7 @@ from shapely.geometry import Polygon
 def generar_mapa_cuenca(lat, lon, geojson_data=None):
     m = folium.Map(
         location=[lat, lon],
-        zoom_start=14,
+        zoom_start=13,
         tiles=None,
         control_scale=True
     )
@@ -25,15 +25,19 @@ def generar_mapa_cuenca(lat, lon, geojson_data=None):
 
     if geojson_data is None:
         coords = [
-            [lat + 0.007, lon - 0.006],
-            [lat + 0.009, lon + 0.004],
-            [lat + 0.004, lon + 0.009],
-            [lat - 0.003, lon + 0.008],
-            [lat - 0.006, lon + 0.004],
-            [lat - 0.008, lon - 0.003],
-            [lat - 0.005, lon - 0.007],
-            [lat + 0.001, lon - 0.008],
-            [lat + 0.007, lon - 0.006]
+            [lat + 0.01, lon],
+            [lat + 0.008, lon + 0.006],
+            [lat + 0.005, lon + 0.012],
+            [lat, lon + 0.013],
+            [lat - 0.005, lon + 0.012],
+            [lat - 0.008, lon + 0.006],
+            [lat - 0.01, lon],
+            [lat - 0.008, lon - 0.006],
+            [lat - 0.005, lon - 0.011],
+            [lat, lon - 0.012],
+            [lat + 0.005, lon - 0.011],
+            [lat + 0.008, lon - 0.006],
+            [lat + 0.01, lon]
         ]
         poly = Polygon(coords)
         gdf = gpd.GeoDataFrame(index=[0], geometry=[poly], crs="EPSG:4326")
@@ -54,3 +58,4 @@ def generar_mapa_cuenca(lat, lon, geojson_data=None):
     folium.LayerControl(collapsed=False).add_to(m)
 
     return m
+
