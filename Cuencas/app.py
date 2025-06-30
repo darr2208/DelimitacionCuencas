@@ -14,24 +14,29 @@ if os.path.exists("assets/estilo.css"):
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 col1, col2 = st.columns([1, 1])
+
+logo1_path = os.path.join(os.path.dirname(__file__), "data", "logo1.png")
+logo2_path = os.path.join(os.path.dirname(__file__), "data", "logo2.png")
+
 with col1:
-    if os.path.exists("data/logo1.png"):
-        st.image(Image.open("../data/logo1.png"), use_container_width=True)
+    if os.path.exists(logo1_path):
+        st.image(Image.open(logo1_path), use_container_width=True)
     else:
-        st.warning("No se encontró el archivo logo1.png")
+        st.warning("No se encontró logo1.png")
+
 with col2:
-    if os.path.exists("data/logo2.png"):
-        st.image(Image.open("../data/logo2.png"), use_container_width=True)
+    if os.path.exists(logo2_path):
+        st.image(Image.open(logo2_path), use_container_width=True)
     else:
-        st.warning("No se encontró el archivo logo2.png")
+        st.warning("No se encontró logo2.png")
 
 st.title("Simulador de Parámetros Morfométricos de Cuencas")
 
 with st.form("formulario"):
     st.subheader("1. Coordenadas del Área de Interés")
-    lat = st.number_input("Latitud (Centro)", value=4.61, format="%.6f")
-    lon = st.number_input("Longitud (Centro)", value=-74.08, format="%.6f")
-    buffer = st.slider("Tamaño del área (km)", min_value=0.5, max_value=5.0, value=1.0, step=0.1)
+    lat = st.number_input("Latitud (Centro)", value=9.761395, format="%.6f")
+    lon = st.number_input("Longitud (Centro)", value=-75.056792, format="%.6f")
+    buffer = st.slider("Tamaño del área (km)", min_value=0.5, max_value=5.0, value=2.0, step=0.1)
 
     st.subheader("2. Opciones de Salida")
     nombre_archivo = st.text_input("Nombre del archivo exportado", value="cuenca")
@@ -63,4 +68,5 @@ if boton:
     st.subheader("Visualización de la Cuenca")
     mapa = generar_mapa_cuenca(lat, lon)
     st.components.v1.html(mapa._repr_html_(), height=500)
+
 
