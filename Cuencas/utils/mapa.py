@@ -2,10 +2,10 @@ import folium
 from shapely.geometry import Point
 import geopandas as gpd
 
-def generar_mapa_cuenca(lat, lon, radio_km=1.0):
+def generar_mapa_cuenca(lat, lon, radio_km=0.5):
     m = folium.Map(
         location=[lat, lon],
-        zoom_start=14,
+        zoom_start=15,
         control_scale=True,
         tiles=None
     )
@@ -28,22 +28,25 @@ def generar_mapa_cuenca(lat, lon, radio_km=1.0):
     coords = list(gdf.iloc[0].geometry.exterior.coords)
     coords_latlon = [[latitud, longitud] for longitud, latitud in coords]
 
+    grupo = folium.FeatureGroup(name='Cuenca simulada')
+
     folium.Polygon(
         locations=coords_latlon,
         color="#d00000",
-        weight=4,
+        weight=3,
         fill=True,
         fill_color="#ff4d4d",
         fill_opacity=0.6,
         tooltip="Área simulada"
-    ).add_to(m)
+    ).add_to(grupo)
 
     folium.Marker(
         location=[lat, lon],
         popup="Punto de interés",
         icon=folium.Icon(color="red", icon="info-sign")
-    ).add_to(m)
+    ).add_to(grupo)
 
+    grupo.add_to(m)
     folium.LayerControl(collapsed=False).add_to(m)
 
     return m
