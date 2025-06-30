@@ -31,7 +31,7 @@ def generar_mapa_cuenca(lat, lon, radio_km=2.0):
     coords = list(gdf_final.iloc[0].geometry.exterior.coords)
     coords_latlon = [[latitud, longitud] for longitud, latitud in coords]
 
-    grupo = folium.FeatureGroup(name='Cuenca simulada')
+    grupo = folium.FeatureGroup(name='Cuenca delimitada')
 
     folium.Polygon(
         locations=coords_latlon,
