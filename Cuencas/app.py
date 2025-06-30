@@ -12,9 +12,9 @@ st.markdown("<link rel='stylesheet' href='assets/estilo.css'>", unsafe_allow_htm
 
 col1, col2 = st.columns([1, 1])
 with col1:
-    st.image("data/logo_1.png", use_container_width=True)
+    st.image("data/logo 1.png", use_container_width=True)
 with col2:
-    st.image("data/logo_2.png", use_container_width=True)
+    st.image("data/logo 2.png", use_container_width=True)
 
 st.title("Simulador de Delimitación de Cuencas Hidrográficas")
 
