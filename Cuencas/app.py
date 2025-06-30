@@ -3,9 +3,9 @@ import os
 import base64
 import pandas as pd
 from utils.calculos import calcular_parametros
-from utils.exportar_excel import exportar_parametros_excel
-from utils.generar_shapefile import generar_shapefile
-from utils.mapa import mostrar_mapa
+from utils.exportar_excel import exportar_a_excel
+from utils.generar_shapefile import generar_shapefile_desde_bbox
+from utils.mapa import generar_mapa_cuenca
 
 with open("assets/estilo.css") as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
